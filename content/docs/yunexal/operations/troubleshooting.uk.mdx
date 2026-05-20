@@ -1,0 +1,59 @@
+---
+title: Troubleshooting
+description: "Типові проблеми Yunexal Panel: service, Docker permissions, WebSocket, UFW, quota, files і sessions."
+---
+
+# Troubleshooting
+
+Починай із фактів: service status, logs, port, Docker, nginx. Більшість production-проблем видно в перші 2–3 команди.
+
+## Debug checklist
+
+```bash
+journalctl -u yunexal-panel -f
+systemctl status yunexal-panel
+ss -tulpn | grep 3000
+docker ps -a
+docker logs <container>
+sudo nginx -t
+curl -vk https://panel.example.com/
+curl -I http://127.0.0.1:3000
+```
+
+## Типові проблеми
+
+| Проблема | Що перевірити | Можливе рішення |
+|---|---|---|
+| Panel не стартує | `journalctl -u yunexal-panel -xe` | Перевір `.env`, довжину `COOKIE_SECRET`, права на `yunexal.db` і `volumes/` |
+| Docker permission denied | `groups $USER`, `ls -l /var/run/docker.sock` | Додай user у `docker` group або запускай service з потрібним user/group |
+| Port already allocated | `ss -tulpn`, `docker ps` | Зміни `PANEL_PORT` або host port binding |
+| WebSocket console не працює | nginx `Upgrade` headers | Додай `proxy_http_version 1.1`, `Upgrade`, `Connection`, timeout `3600s` |
+| UFW button не працює | `sudo -n ufw status` | Додай sudoers `NOPASSWD` rule для `ufw` |
+| Disk limit disabled | `findmnt -no FSTYPE,OPTIONS path` | Використай ext4 з `prjquota` |
+| File edit/open блокується | file type/media/archive/binary | Це guard; редагуй тільки text/config files |
+| Extract створює root-owned files | version або helper permissions | Онови panel, перевір chown після extract |
+| Login loops після зміни `COOKIE_SECRET` | чи змінювався secret | Очікувано: всі sessions invalidated, треба перелогінитися |
+
+## Console не підключається
+
+Найчастіша причина — reverse proxy не forwarding WebSocket upgrade headers.
+
+Обов’язковий мінімум:
+
+```nginx
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+proxy_read_timeout 3600s;
+proxy_send_timeout 3600s;
+```
+
+## Неправильний client IP
+
+Yunexal довіряє `X-Forwarded-For` / `X-Real-IP` тільки якщо direct peer — local/private proxy address. Це захищає від spoofed client IP, але вимагає нормальної topology:
+
+```text
+Internet -> nginx on same host/private network -> Yunexal Panel
+```
+
+Не відкривай panel напряму в інтернет і не очікуй, що довіра до будь-якого `X-Forwarded-For` буде безпечною.

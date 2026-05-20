@@ -1,0 +1,61 @@
+---
+title: API access
+description: Підтверджені API endpoints, service API key і безпечна модель third-party integration.
+---
+
+# API access
+
+У README описаний service API key і endpoint `POST /api/auth/service-login`. CHANGELOG також підтверджує endpoints для audit, storage migration і Dockerfile build.
+
+У репозиторії немає повного OpenAPI/Swagger reference, тому ця сторінка фіксує тільки підтверджені routes і не вигадує неописаний API.
+
+## Service API key
+
+Service API key можна задати:
+
+- у `.env` через `YUNEXAL_API_KEY`;
+- альтернативно через `PANEL_API_KEY`;
+- у Admin Panel → Panel Settings → API Key.
+
+Ідея flow:
+
+1. integration надсилає API key у `/api/auth/service-login`;
+2. panel валідовує ключ;
+3. integration отримує стандартну session cookie;
+4. далі викликає API endpoints як authenticated client.
+
+## Підтверджені endpoints
+
+| Endpoint | Method | Призначення | Примітка |
+|---|---:|---|---|
+| `/api/auth/service-login` | `POST` | Validate API key і видати session cookie | для third-party integrations |
+| `/api/servers/{id}/audit` | `GET` | Отримати per-server audit log | pagination, action/search/actor filters |
+| `/api/servers/{id}/audit/download` | `GET` | Export audit log як `.log` | з поточними filters |
+| `/api/admin/storage/migrate` | `POST` | Cross-disk/filesystem container migration | stop/rsync/recreate/update/restart flow |
+| `/api/admin/storage/mounts?include_all=1` | `GET` | Показати mounts, включно з blocked + reason | для storage selector/debug |
+| `/api/image/build-dockerfile` | `POST` | Multipart upload Dockerfile і build local image | built tag auto-fills image field |
+
+## Service-login приклад
+
+Точний body треба звіряти з актуальним `src/handlers/auth.rs` перед production integration.
+
+```bash
+curl -i -X POST http://127.0.0.1:3000/api/auth/service-login \
+  -H 'Content-Type: application/json' \
+  -d '{"api_key":"YOUR_KEY"}'
+```
+
+Після отримання cookie:
+
+```bash
+curl http://127.0.0.1:3000/api/servers/123/audit \
+  -b cookies.txt
+```
+
+## Безпечна інтеграція
+
+- Не передавай API key у query string.
+- Не логуй API key у reverse proxy або application logs.
+- Для production використовуй HTTPS.
+- Розділяй service keys для різних external integrations.
+- Ротуй ключ після підозри на витік.

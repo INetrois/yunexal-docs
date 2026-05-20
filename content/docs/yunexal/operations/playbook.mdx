@@ -1,0 +1,41 @@
+---
+title: Operational playbook
+description: Post-install checks, updates, backup, and restore logic.
+---
+
+# Operational playbook
+
+## After installation
+
+```bash
+systemctl status yunexal-panel
+ss -tulpn | grep 3000
+docker ps
+docker info
+sudo nginx -t
+curl -I http://127.0.0.1:3000
+```
+
+## Backup before update
+
+```bash
+sudo systemctl stop yunexal-panel
+cp .env .env.backup.$(date +%F)
+cp yunexal.db yunexal.db.backup.$(date +%F)
+tar -czf volumes.backup.$(date +%F).tar.gz volumes/
+sudo systemctl start yunexal-panel
+```
+
+Back up `yunexal.db`, `.env`, `volumes/`, nginx config, and custom service files.
+
+## Restore
+
+```bash
+sudo systemctl stop yunexal-panel
+cp yunexal.db.backup.YYYY-MM-DD yunexal.db
+cp .env.backup.YYYY-MM-DD .env
+rm -rf volumes
+mkdir volumes
+tar -xzf volumes.backup.YYYY-MM-DD.tar.gz
+sudo systemctl start yunexal-panel
+```

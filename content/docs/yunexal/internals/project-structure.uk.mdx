@@ -1,0 +1,82 @@
+---
+title: Project structure
+description: Карта кодової бази Yunexal Panel і де шукати auth, Docker, files, networking, storage та setup.
+---
+
+# Project structure
+
+Yunexal Panel має backend-driven архітектуру: Rust handlers, SQLite state, Docker SDK layer, Askama templates і embedded static assets.
+
+## Структура `src/`
+
+```text
+src/
+├── main.rs              # entry point, router, middleware
+├── lib.rs               # library crate shared between binaries
+├── state.rs             # AppState: DB pool, Docker client, login limiter
+├── auth.rs              # sessions, admin guard, RBAC, rate limiter
+├── compose.rs           # Docker Compose YAML parser
+├── password.rs          # Argon2id hash / verify
+├── host.rs              # host commands, init-system detection
+├── db/
+│   ├── mod.rs           # schema init, migrations, seed defaults
+│   ├── users.rs         # user CRUD, uid + nickname model
+│   ├── servers.rs       # server CRUD + container-scoped access
+│   ├── ports.rs         # port mappings + UFW state
+│   ├── images.rs        # image ENV overrides
+│   ├── audit.rs         # immutable global + per-server audit
+│   ├── settings.rs      # panel_settings key/value store
+│   ├── roles.rs         # RBAC roles, permissions, tri-state policy
+│   └── sessions.rs      # user session records and devices
+├── docker/
+│   ├── mod.rs           # Docker client, ContainerInfo
+│   ├── containers.rs    # lifecycle, attach, list
+│   ├── stats.rs         # CPU/RAM/network/disk I/O stats
+│   ├── images.rs        # pull, delete, duplicate, ENV fetch
+│   ├── files.rs         # volume file operations
+│   ├── network.rs       # bandwidth limiting, isolated networks
+│   ├── edit.rs          # inspect & recreate containers
+│   └── quota.rs         # ext4 project-quota enforcement
+├── bin/
+│   └── setup.rs         # yunexal-setup wizard, systemd + OpenRC
+└── handlers/
+    ├── mod.rs           # router, embedded assets, request tracking
+    ├── auth.rs          # login / logout / service-login
+    ├── dashboard.rs     # dashboard, server list fragment, sessions API
+    ├── servers.rs       # console, settings, stats, lifecycle, ENV, reset, members
+    ├── files.rs         # file API, upload, extract, edit, safe paths
+    ├── network.rs       # networking, ports, bandwidth, UFW API
+    ├── create.rs        # container creation, Dockerfile build, quota preflight
+    ├── admin.rs         # users, images, containers, roles, settings
+    ├── ws.rs            # WebSocket console
+    └── templates.rs     # Askama template structs
+```
+
+## Templates і assets
+
+```text
+templates/  # Askama HTML templates compiled into binary
+static/     # CSS, JS, icons compiled through rust-embed
+```
+
+Це означає, що production deploy не потребує окремого runtime bundle з frontend assets поруч із binary.
+
+## Де шукати потрібну логіку
+
+| Що шукаєш | Файли |
+|---|---|
+| Auth/session/RBAC | `src/auth.rs`, `src/db/roles.rs`, `src/db/sessions.rs`, `src/handlers/auth.rs` |
+| Docker lifecycle | `src/docker/containers.rs`, `src/docker/edit.rs`, `src/handlers/servers.rs` |
+| File manager | `src/docker/files.rs`, `src/handlers/files.rs`, `templates/files*` |
+| Networking/UFW/bandwidth | `src/docker/network.rs`, `src/db/ports.rs`, `src/handlers/network.rs` |
+| Storage/quota | `src/docker/quota.rs`, `src/handlers/admin.rs` |
+| Admin UI | `src/handlers/admin.rs`, `templates/admin*` |
+| Setup wizard | `src/bin/setup.rs`, `src/host.rs` |
+| Frontend JS/CSS | `static/` |
+| HTML templates | `templates/` |
+
+## Backend-driven UI
+
+UI не є важким SPA. Часткові оновлення робляться через HTMX і власні JS lifecycle hooks.
+
+Server sidebar використовує SPA-like navigation: змінюється тільки `.yu-main`, а sidebar/assets залишаються на місці. Через це сторінки мають перевикликати polling, terminal fit або WebSocket reconnect через події на кшталт `yu:page-shown`.

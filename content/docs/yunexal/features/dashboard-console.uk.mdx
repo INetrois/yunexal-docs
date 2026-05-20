@@ -1,0 +1,34 @@
+---
+title: Dashboard і Console
+description: Live-огляд серверів і термінальні сценарії в Yunexal Panel.
+---
+
+# Dashboard і Console
+
+Dashboard побудований навколо live operational visibility, а не статичного переліку серверів.
+
+## Що upstream README прямо описує для dashboard
+
+- live-grid керованих контейнерів
+- CPU percentage, RAM, network I/O, disk I/O та uptime
+- auto-polling кожні 5 секунд
+- state badges для running, stopped і error
+- фільтр `My only`, щоб admin бачив лише свої сервери
+- можливість змінити власний пароль прямо з dashboard
+
+## Що дає console surface
+
+Для кожного сервера панель може показувати термінал, прив'язаний до Docker container TTY через WebSocket і `xterm.js`.
+
+Upstream також описує:
+
+- ANSI color rendering
+- сумісність із HTML-подібними логами, які виводять деякі сервери
+- окреме поле для введення команд під терміналом
+- графіки з one-second polling і rolling history
+- storage card з розміром volume під час відкриття сторінки
+- storage card з розміром volume під час відкриття сторінки
+
+## Чому reverse proxy тут критичний
+
+Якщо nginx або інший proxy не передає WebSocket upgrade headers, саме ця частина продукту виглядатиме зламаною першою, хоча інші сторінки все ще відкриватимуться.

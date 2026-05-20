@@ -1,0 +1,63 @@
+---
+title: Changelog, roadmap, and contributing
+description: v0.5.0 highlights, roadmap, and PR workflow.
+---
+
+# Changelog, roadmap, and contributing
+
+## v0.5.0 highlights
+
+- Full RBAC with tri-state permissions and Role Studio
+- Container-scoped user access
+- Session device tracking and password-change invalidation
+- Per-server audit log with filters and download
+- SPA-like server sidebar navigation
+- Alpine Linux / OpenRC support
+- Service API key for integrations
+- Storage model centered on ext4 + `prjquota`
+- New Server UI with local-first image resolution and Dockerfile builds
+
+## Implemented
+
+| Area | Feature |
+|---|---|
+| General | Overview: system stats, ZRAM, panel updates |
+| General | All Containers: manage any container across all users |
+| General | Images: pull, delete, duplicate, ENV overrides |
+| Management | Users: create, delete, roles with full RBAC permission matrix |
+| Analytics | Audit Log: immutable global and per-server records, filters, Device column |
+| Configuration | Panel Settings: UFW, bandwidth, sidebar visibility, panel updates |
+| Configuration | API Keys: service API key for external integrations |
+
+## Planned
+
+| Area | Feature |
+|---|---|
+| Management | Dispatchers: task dispatchers and future agent manager workflows |
+| Management | Firewall: global IP allow/block rules beyond per-port UFW |
+| Management | Backups: scheduled volume snapshots with retention policies |
+| Management | Tickets: built-in support ticket system for end users |
+| Analytics | Insights: historical resource usage charts and trend analysis |
+| Configuration | Notifications: email or webhook alerts |
+| Configuration | Themes: custom color schemes and branding |
+| Other | Windows host support |
+| Other | Mobile app |
+| Other | ARM server support |
+| Other | Marketplace templates |
+| Other | Community plugins |
+| Other | Localization |
+| Other | Accessibility |
+
+The roadmap is flexible. Users can propose or upvote work in [Issues](https://github.com/nestorchurin/yunexal-panel/issues), or discuss implementation in [Discussions](https://github.com/nestorchurin/yunexal-panel/discussions).
+
+## Contributing
+
+```bash
+git checkout -b feature/your-feature
+cargo fmt
+cargo clippy
+cargo test
+cargo build --release
+```
+
+PRs should explain the problem, changed modules, tests, migrations or breaking changes, and any security/storage/permission impact.

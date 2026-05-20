@@ -1,0 +1,42 @@
+---
+title: Configuration
+description: Runtime environment variables for Yunexal Panel.
+---
+
+# Configuration
+
+Yunexal Panel reads configuration from a `.env` file in the same directory as the binary, or directly from environment variables. `yunexal-setup` generates this file interactively.
+
+## Default `.env` shape
+
+```dotenv
+# Panel port (default: 3000)
+PANEL_PORT=3000
+
+# 128-character hex string, 64 random bytes.
+# Changing this invalidates all active sessions.
+COOKIE_SECRET=<128 hex chars>
+
+# Optional service API key for third-party integrations.
+YUNEXAL_API_KEY=<your-api-key>
+
+# Written by yunexal-setup.
+DATABASE_URL=sqlite:yunexal.db
+```
+
+`PANEL_API_KEY` is also accepted as an API-key environment variable.
+
+## Runtime files
+
+The SQLite database, `yunexal.db`, and the `volumes/` directory are created automatically on first run beside the binary.
+
+## Initial credentials
+
+Initial credentials are set by `yunexal-setup`. Additional users, roles, and panel settings are managed from the Admin Panel at `/admin`.
+
+## Operational notes
+
+- Generate `COOKIE_SECRET` with `openssl rand -hex 64`
+- Rotate `COOKIE_SECRET` only when you intend to log everyone out
+- Keep API keys out of query strings and proxy logs
+- In production, terminate HTTPS at nginx or another reverse proxy and forward traffic to `PANEL_PORT`

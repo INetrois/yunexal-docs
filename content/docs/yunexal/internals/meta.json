@@ -1,0 +1,10 @@
+{
+  "title": "Internals",
+  "icon": "Code2",
+  "pages": [
+    "index",
+    "architecture",
+    "project-structure",
+    "changelog-roadmap"
+  ]
+}

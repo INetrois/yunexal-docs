@@ -1,0 +1,67 @@
+---
+title: Docker And Permissions
+description: Docker access, container import, socket assumptions, and UFW permission behavior.
+---
+
+# Docker And Permissions
+
+The panel is Docker-first. If Docker access is missing or partially blocked, many admin and server workflows will fail.
+
+## Docker requirements
+
+- Docker Engine must be installed and running
+- Minimum Docker Engine: `24.0`
+- Recommended Docker Engine: `29.0+`
+- The panel process must be able to access the Docker socket
+- The setup wizard verifies Docker by attempting to pull `alpine:latest`
+
+## Host requirements
+
+| Requirement | Minimum | Recommended |
+|---|---|---|
+| OS | Linux with Docker and a supported service manager | Ubuntu LTS or Alpine Linux |
+| Init system | systemd or OpenRC | Either, auto-detected by `yunexal-setup` |
+| RAM | 64 MB for the panel process | 2 GB with managed containers |
+| CPU | 1 vCPU | 2 vCPU |
+| Disk | 100 MB for binary, DB, and volumes | 500 MB+ |
+| Filesystem | Any, with quotas disabled | ext4 with `prjquota` |
+| Ports | One free panel port plus container ports | Multiple free ports |
+| Reverse proxy | Optional HTTP-only access | HTTPS reverse proxy with WebSocket support |
+
+## User-to-Docker access
+
+The upstream README recommends adding your user to the `docker` group:
+
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+## Existing container import
+
+`yunexal-setup` can import already-running containers into the panel database. During the import step it:
+
+- lists all current Docker containers
+- lets you select individual items or `all`
+- registers them into the panel database as managed servers
+
+This is useful when adopting Yunexal Panel on a host that already has game or application containers running.
+
+## UFW integration
+
+Networking pages can expose a per-port UFW shield action, but only when UFW support is enabled in panel settings and the panel can run `sudo -n ufw`.
+
+The upstream README shows this sudoers pattern:
+
+```bash
+echo "www-data ALL=(ALL) NOPASSWD: /usr/sbin/ufw" | sudo tee /etc/sudoers.d/yunexal-ufw
+```
+
+The admin handler also returns a fix command when `sudo -n ufw` is denied, so the UI can explain how to enable passwordless access safely.
+
+## What to check when Docker-backed features fail
+
+- the panel service user can reach `/var/run/docker.sock`
+- `docker ps` works from the same host user context
+- the Docker daemon is active
+- the host has enough permission to create or inspect volumes and containers

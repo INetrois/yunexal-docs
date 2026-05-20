@@ -1,0 +1,82 @@
+---
+title: Operational playbook
+description: Що перевірити після встановлення, як оновлювати панель і як робити backup/restore.
+---
+
+# Operational playbook
+
+Ця сторінка — короткий production checklist для адміністратора Yunexal Panel.
+
+## Після встановлення
+
+Перевір процес:
+
+```bash
+systemctl status yunexal-panel
+```
+
+Перевір порт:
+
+```bash
+ss -tulpn | grep 3000
+```
+
+Перевір Docker:
+
+```bash
+docker ps
+docker info
+```
+
+Перевір nginx:
+
+```bash
+sudo nginx -t
+curl -I http://127.0.0.1:3000
+```
+
+## Оновлення
+
+Admin Panel має Panel Updates: перевірка stable/unstable releases, download & install, auto-restart.
+
+Перед production update зроби backup:
+
+```bash
+sudo systemctl stop yunexal-panel
+cp .env .env.backup.$(date +%F)
+cp yunexal.db yunexal.db.backup.$(date +%F)
+tar -czf volumes.backup.$(date +%F).tar.gz volumes/
+sudo systemctl start yunexal-panel
+```
+
+## Що backup-ити
+
+- `yunexal.db` — users, roles, servers, settings, audit.
+- `.env` — `COOKIE_SECRET`, API key, panel port.
+- `volumes/` — дані контейнерів.
+- nginx config — якщо production proxy генерувався або кастомізувався.
+- systemd/OpenRC service — якщо змінювався вручну.
+
+## Restore logic
+
+```bash
+sudo systemctl stop yunexal-panel
+cp yunexal.db.backup.YYYY-MM-DD yunexal.db
+cp .env.backup.YYYY-MM-DD .env
+rm -rf volumes
+mkdir volumes
+tar -xzf volumes.backup.YYYY-MM-DD.tar.gz
+sudo systemctl start yunexal-panel
+```
+
+Restore треба тестувати на staging, особливо якщо servers прив’язані до конкретних host ports, filesystem paths, quotas або Docker networks.
+
+## Production sanity checklist
+
+- `COOKIE_SECRET` стабільний і не лежить у Git.
+- Docker socket доступний тільки потрібному service user/group.
+- nginx передає WebSocket upgrade headers.
+- `volumes/` лежить на очікуваному storage path.
+- Якщо потрібні disk limits — filesystem ext4 + `prjquota`.
+- UFW sudoers rule доданий тільки якщо реально використовується per-port blocking.
+- Backups перевірені restore-тестом.

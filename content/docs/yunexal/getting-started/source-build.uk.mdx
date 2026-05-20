@@ -1,0 +1,52 @@
+---
+title: Збірка з source
+description: Збірка та запуск Yunexal Panel безпосередньо з репозиторію через Cargo.
+---
+
+# Збірка з source
+
+Збірка з коду підходить, якщо ви хочете аудіювати, змінювати або запускати проєкт напряму з репозиторію.
+
+## Вимоги
+
+- Rust `1.78+`
+- Docker Engine на хості
+- Linux-середовище, у якому бінарники можуть працювати з `/var/run/docker.sock`
+
+## Кроки збірки
+
+```bash
+git clone https://github.com/nestorchurin/yunexal-panel.git
+cd yunexal-panel
+cargo build --release
+```
+
+У результаті ви отримаєте:
+
+- `target/release/yunexal-panel`
+- `target/release/yunexal-setup`
+
+## Запуск setup
+
+```bash
+sudo ./target/release/yunexal-setup
+```
+
+## Старт панелі
+
+```bash
+./target/release/yunexal-panel
+```
+
+## Що корисно знати про структуру коду
+
+- `src/main.rs` піднімає Axum app, middleware і runtime
+- `src/state.rs` зберігає DB pool, Docker client, cookie key і login-rate-limit state
+- `src/handlers/` містить route handlers для dashboard, files, networking, admin, auth і WebSocket console
+- `templates/` і `static/` вбудовуються в бінарник, а не віддаються як окремий runtime tree
+
+## Коли цей шлях кращий
+
+- якщо потрібно змінювати Rust-хендлери
+- якщо ви запускаєте кастомну гілку, а не останній реліз
+- якщо ви контриб'ютите upstream-проєкту

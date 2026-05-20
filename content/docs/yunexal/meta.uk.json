@@ -1,0 +1,15 @@
+{
+  "title": "Yunexal Panel",
+  "description": "Офіційна документація Yunexal Panel",
+  "icon": "ServerCog",
+  "pages": [
+    "index",
+    "getting-started",
+    "operations",
+    "features",
+    "security",
+    "internals"
+  ],
+  "root": true,
+  "defaultOpen": true
+}

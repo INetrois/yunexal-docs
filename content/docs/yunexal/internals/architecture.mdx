@@ -1,0 +1,43 @@
+---
+title: Architecture
+description: The main runtime modules and data flow inside Yunexal Panel.
+---
+
+# Architecture
+
+The upstream README provides a useful high-level project tree, and the current code confirms that organization.
+
+## Main layers
+
+- `src/main.rs`: application entry point and Axum startup
+- `src/state.rs`: shared `AppState` with DB pool, Docker client, cookie key, and login limiter state
+- `src/auth.rs`: session lookup, guards, client IP extraction, and route protection helpers
+- `src/db/`: persistence for users, servers, ports, images, audit, roles, sessions, and settings
+- `src/docker/`: container lifecycle, stats, file operations, image handling, network shaping, and edit/recreate flows
+- `src/handlers/`: route-level logic for each product area
+
+## Embedded frontend model
+
+Unlike many panels that require separate frontend deployment artifacts, Yunexal Panel compiles:
+
+- `templates/` with Askama
+- `static/` assets with `rust-embed`
+
+into the binary. That keeps runtime deployment smaller and avoids a second build artifact tree.
+
+## Data and control flow
+
+At a high level:
+
+1. The request enters Axum.
+2. Middleware enforces auth, role, and security headers.
+3. Handlers read or mutate SQLite state and Docker state.
+4. Templates or partial responses render the result back to the browser.
+5. Some pages poll or stream updates through HTMX and WebSockets.
+
+## Why this matters operationally
+
+- SQLite makes single-host deployment easy
+- direct Docker integration keeps the panel close to real runtime state
+- embedded assets reduce deployment drift
+- root/admin/user separation lets the same panel serve both operators and regular owners with different capabilities

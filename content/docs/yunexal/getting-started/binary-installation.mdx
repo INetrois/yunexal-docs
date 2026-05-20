@@ -1,0 +1,59 @@
+---
+title: Binary Installation
+description: Install Yunexal Panel from the upstream release tarball with the interactive setup wizard.
+---
+
+# Binary Installation
+
+The upstream README documents the binary release flow as the default installation path.
+
+## 1. Download and extract
+
+```bash
+wget https://github.com/nestorchurin/yunexal-panel/releases/latest/download/yunexal-panel-linux-x86_64.tar.gz
+tar -xzf yunexal-panel-linux-x86_64.tar.gz
+cd yunex-release
+```
+
+## 2. Run the setup wizard
+
+```bash
+sudo ./yunexal-setup
+```
+
+The setup wizard in [`src/bin/setup.rs`](https://github.com/nestorchurin/yunexal-panel/blob/main/src/bin/setup.rs) walks through these stages:
+
+- optional reset of `yunexal.db`, `yunexal.db-shm`, `yunexal.db-wal`, and `.env`
+- Docker detection, optional install or upgrade, daemon start, and `alpine:latest` reachability check
+- `.env` creation with `PANEL_PORT`, `COOKIE_SECRET`, and `DATABASE_URL=sqlite:yunexal.db`
+- root-user creation or update
+- optional import of existing Docker containers into the panel database
+- optional `systemd` service creation for `yunexal-panel`
+- optional nginx reverse-proxy configuration
+
+## 3. Start the panel
+
+```bash
+./yunexal-panel
+```
+
+If you enabled the service step instead, use:
+
+```bash
+sudo systemctl status yunexal-panel
+sudo journalctl -u yunexal-panel -f
+```
+
+## Runtime files created on first start
+
+- `yunexal.db`
+- `yunexal.db-shm`
+- `yunexal.db-wal`
+- `.env`
+- `volumes/`
+
+## Notes
+
+- The setup wizard must be run as root.
+- Changing `COOKIE_SECRET` later will invalidate all active sessions.
+- If you are putting the panel on a public domain, continue with the reverse-proxy guide so the console WebSocket can upgrade correctly.

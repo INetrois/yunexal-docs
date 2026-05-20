@@ -1,0 +1,29 @@
+---
+title: Auth And Rate Limits
+description: Session cookies, device tracking, password invalidation, and login lockouts.
+---
+
+# Auth And Rate Limits
+
+Authentication is cookie-based and designed for a self-hosted admin panel.
+
+## Login and cookies
+
+- Users authenticate through the panel login page
+- The session cookie is private and encrypted
+- Cookies use `SameSite=Strict`
+- Stale cookies are rejected when their password-hash stamp no longer matches the current user password hash
+
+## Rate limits
+
+Yunexal locks an IP for 60 seconds after 5 failed login attempts. This protects the login route without adding external infrastructure requirements.
+
+## Device sessions
+
+The dashboard settings modal lists active sessions with parsed device and browser information. Users can log out individual devices, while the current session is protected from remote logout.
+
+Changing a password invalidates all active sessions across all devices.
+
+## Trusted proxy boundary
+
+The panel reads `X-Forwarded-For` and `X-Real-IP` only when the request comes from local or private proxy addresses. In production, keep nginx or another reverse proxy as the only public edge in front of the panel.

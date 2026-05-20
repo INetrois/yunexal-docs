@@ -1,0 +1,71 @@
+---
+title: Storage і quota
+description: Як працюють volume paths, ext4 project quotas, migration і небезпечний unsafe override mode.
+---
+
+# Storage і quota
+
+У `v0.5.0` storage backend спрощений до моделі **ext4 + prjquota**. Це робить поведінку передбачуванішою, але означає: disk limits не треба очікувати на ZFS/Btrfs/XFS у поточній documented моделі.
+
+## Quota-capable storage
+
+Для per-container disk limits потрібен ext4 filesystem, змонтований із `prjquota`.
+
+Приклад `/etc/fstab`:
+
+```text
+/dev/sdb1 /var/lib/yunexal-volumes ext4 defaults,prjquota 0 2
+```
+
+Після зміни mount options перезмонтуй розділ або перезавантаж сервер і перевір:
+
+```bash
+findmnt -no FSTYPE,OPTIONS /var/lib/yunexal-volumes
+```
+
+## Quota flow
+
+Високорівневий flow:
+
+```text
+Storage path
+-> validate_storage_base_path(...)
+-> check ext4 + prjquota
+-> apply_ext4_quota / remove_ext4_quota
+-> container creation / recreate / migration
+```
+
+Якщо path не quota-capable, створення container з disk limit має бути заблоковане. Це краще, ніж створити сервер без реального enforcement.
+
+## Cross-disk / filesystem migration
+
+Storage migration flow з CHANGELOG:
+
+1. stop container;
+2. prepare target;
+3. `rsync` data;
+4. recreate container;
+5. update DB;
+6. reapply bandwidth/quota;
+7. restart container.
+
+Після migration важливо зберегти owner/mode volume root, щоб не отримати permission drift.
+
+## Unsafe override
+
+Admin Settings має unsafe override mode для advanced setups. Це небезпечний режим: він обходить storage policy.
+
+Використовуй його тільки якщо:
+
+- ти точно знаєш, чому стандартна перевірка блокує шлях;
+- є backup;
+- ти перевірив filesystem і permissions вручну;
+- ти приймаєш ризик некоректного disk limit enforcement.
+
+## Рекомендована практика
+
+- Виділи окремий ext4 partition для `volumes/`.
+- Монтуй його з `prjquota`.
+- Не клади client volumes на root filesystem, якщо планується багато контейнерів.
+- Регулярно перевіряй `df -h`, `df -i`, `journalctl`.
+- До появи built-in backups використовуй `rsync`, `tar`, VM snapshots або storage-level snapshots.

@@ -1,0 +1,51 @@
+---
+title: Changelog, roadmap і contributing
+description: v0.5.0 highlights, roadmap і PR workflow.
+---
+
+# Changelog, roadmap і contributing
+
+## v0.5.0 highlights
+
+- Full RBAC із tri-state permissions і Role Studio
+- Container-scoped user access
+- Session device tracking і password-change invalidation
+- Per-server audit log із filters і download
+- SPA-like server sidebar navigation
+- Alpine Linux / OpenRC support
+- Service API key для integrations
+- Storage model around ext4 + `prjquota`
+- New Server UI з local-first image resolution і Dockerfile builds
+
+## Roadmap
+
+Implemented:
+
+- Overview: system stats, ZRAM, panel updates
+- All Containers: manage any container across all users
+- Images: pull, delete, duplicate, ENV overrides
+- Users: create, delete, roles with RBAC permission matrix
+- Audit Log: immutable global and per-server records
+- Panel Settings and API Keys
+
+Planned:
+
+- Dispatchers, firewall-wide rules, backups, tickets
+- Insights, notifications, themes
+- Windows host support, mobile app, ARM servers
+- Marketplace templates and community plugins
+- Localization and accessibility
+
+Roadmap is flexible and can change based on Issues, Discussions, and contributor work.
+
+## Contributing
+
+```bash
+git checkout -b feature/your-feature
+cargo fmt
+cargo clippy
+cargo test
+cargo build --release
+```
+
+PRs should explain the problem, changed modules, tests, migrations or breaking changes, and any security/storage/permission impact.

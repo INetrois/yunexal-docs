@@ -1,0 +1,29 @@
+---
+title: Auth і Rate Limits
+description: Session cookies, device tracking, password invalidation і login lockouts.
+---
+
+# Auth і Rate Limits
+
+Authentication cookie-based і підходить для self-hosted admin panel.
+
+## Login і cookies
+
+- users authenticate через login page
+- session cookie private і encrypted
+- cookies використовують `SameSite=Strict`
+- stale cookies rejected, якщо password-hash stamp не збігається з поточним password hash користувача
+
+## Rate limits
+
+Yunexal блокує IP на 60 seconds після 5 failed login attempts.
+
+## Device sessions
+
+Dashboard settings modal показує active sessions із parsed device/browser info. Users можуть log out individual devices, а current session protected from remote logout.
+
+Password change invalidates all active sessions across all devices.
+
+## Trusted proxy boundary
+
+Panel читає `X-Forwarded-For` і `X-Real-IP` лише якщо request приходить із local/private proxy addresses. У production тримайте nginx або інший reverse proxy єдиним public edge перед panel.

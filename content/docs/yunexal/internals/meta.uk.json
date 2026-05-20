@@ -1,0 +1,10 @@
+{
+  "title": "Внутрішня будова",
+  "icon": "Code2",
+  "pages": [
+    "index",
+    "architecture",
+    "project-structure",
+    "changelog-roadmap"
+  ]
+}

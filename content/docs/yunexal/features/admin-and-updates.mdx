@@ -1,0 +1,34 @@
+---
+title: Admin And Updates
+description: Root and admin workflows in Yunexal Panel v0.5.0.
+---
+
+# Admin And Updates
+
+The admin panel exposes the platform controls needed to operate a single-host Docker management panel.
+
+## Admin tabs
+
+The documented v0.5.0 admin tabs are:
+
+- Overview
+- Containers
+- Images
+- Users
+- Roles
+- Audit Log
+- Panel Settings
+
+## Core admin capabilities
+
+- Users: create, delete, set passwords, manage UID + Nickname identities, and assign tri-state RBAC roles
+- Roles & Permissions: create custom roles, edit `read / none / write` permission policies, assign colors, and keep the `root` role immutable
+- Images: pull, delete, duplicate, and configure ENV overrides
+- Containers: edit disk limit, bandwidth, ENV, and ports; stop all at once; update row state without animation flicker
+- Audit Log: immutable records, 200 per page, multi-select action filter, parsed Device column, and full User-Agent tooltip
+- Panel Updates: check stable or unstable releases, download and install, then auto-restart
+- Panel Settings: categorical root-only layout for Storage, Security, Operations, and Interface
+
+## Upcoming admin areas
+
+Dispatchers, firewall-wide rules, backups, tickets, insights, notifications, themes, marketplace support, plugins, localization, and accessibility are roadmap items rather than completed admin surfaces.

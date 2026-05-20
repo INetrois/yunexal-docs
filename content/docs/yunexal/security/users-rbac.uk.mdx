@@ -1,0 +1,68 @@
+---
+title: Користувачі, ролі і доступи
+description: RBAC, UID/Nickname identity, container-scoped access і практична модель ролей.
+---
+
+# Користувачі, ролі і доступи
+
+У `v0.5.0` Yunexal Panel має повний role-based access control з tri-state permissions: `read / none / write`.
+
+## RBAC
+
+Admin Panel має Role Studio UI для:
+
+- створення custom roles;
+- редагування permission matrix;
+- налаштування кольору ролі;
+- призначення ролей користувачам.
+
+`root` role immutable: backend блокує зміну її policy.
+
+## UID + Nickname identity
+
+User schema має:
+
+- `uid` — 9–16 characters, unique;
+- `nickname` — до 24 characters;
+- login через username або UID;
+- auto-generated UID у create-user form;
+- UID і nickname у Admin Users table.
+
+## Container-scoped user access
+
+Користувача можна додати до конкретного container без global admin rights. Доступ задається per-server per-user через capability policy `none / read / write`.
+
+| Capability | Що контролює |
+|---|---|
+| `console` | перегляд і використання server console |
+| `files` | file manager: read/edit/upload/delete залежно від `write` |
+| `networking` | ports, UFW і bandwidth section |
+| `settings` | ENV, factory reset, danger zone залежно від ролі |
+| `audit` | server audit log |
+| `power` | start / stop / restart / kill |
+
+Non-admin members бачать тільки дозволені tabs. Power actions мають поважати `power:write`.
+
+## Практична модель ролей
+
+| Роль | Рекомендовані права | Для кого |
+|---|---|---|
+| `root` | full access, immutable | власник інсталяції |
+| `admin` | users/containers/images/settings без зміни root | технічний адміністратор |
+| `support` | read audit, read networking, read files, limited power | підтримка користувачів |
+| `server-owner` | write console/files/settings/power тільки для своїх containers | клієнт або власник сервера |
+| `viewer` | read-only console/files/audit | спостерігач або тимчасовий доступ |
+
+## Permission-aware admin area
+
+`/admin` і sub-routes мають враховувати granular permissions. Якщо користувач не має доступу до конкретного tab, UI має вести його до першого дозволеного tab або повертати 403.
+
+## Що перевіряти при змінах
+
+Після будь-якого PR, який змінює ролі або доступи, перевір:
+
+- non-admin не бачить admin-only tabs;
+- member без `files:write` не може upload/delete;
+- member без `power:write` не може start/stop/restart/kill;
+- root role неможливо змінити або видалити;
+- audit log фіксує security-sensitive actions.

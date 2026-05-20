@@ -1,0 +1,41 @@
+---
+title: Архітектура
+description: Основні runtime-модулі та потоки даних усередині Yunexal Panel.
+---
+
+# Архітектура
+
+Upstream README дає корисне high-level дерево проєкту, і поточний код підтверджує цю структуру.
+
+## Головні шари
+
+- `src/main.rs`: entry point і запуск Axum
+- `src/state.rs`: спільний `AppState` з DB pool, Docker client, cookie key і login limiter state
+- `src/auth.rs`: session lookup, guards, client IP extraction і route protection helpers
+- `src/db/`: persistence для users, servers, ports, images, audit, roles, sessions і settings
+- `src/docker/`: container lifecycle, stats, file operations, image handling, network shaping і edit/recreate flows
+- `src/handlers/`: route-level логіка для кожної product area
+
+## Embedded frontend model
+
+На відміну від багатьох панелей, яким потрібен окремий frontend build artifact, Yunexal Panel компілює:
+
+- `templates/` через Askama
+- `static/` через `rust-embed`
+
+прямо в бінарник. Це спрощує деплой і зменшує ризик runtime drift.
+
+## Data/control flow на високому рівні
+
+1. Запит приходить в Axum.
+2. Middleware накладає auth, role checks і security headers.
+3. Handlers читають або змінюють SQLite state та Docker state.
+4. Templates або partial responses віддають результат назад у браузер.
+5. Частина сторінок оновлюється через HTMX або стрімиться через WebSockets.
+
+## Чому це важливо практично
+
+- SQLite спрощує single-host deployment
+- direct Docker integration тримає панель близько до реального runtime state
+- embedded assets спрощують релізи
+- поділ на `root` / `admin` / `user` дозволяє одній панелі безпечно обслуговувати різні ролі

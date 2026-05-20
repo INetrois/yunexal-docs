@@ -1,0 +1,27 @@
+---
+title: Networking
+description: Port mapping, bandwidth control і firewall actions.
+---
+
+# Networking
+
+Networking — first-class вкладка сервера в Yunexal Panel.
+
+## Port mappings
+
+- перегляд усіх host-to-container port bindings
+- протоколи TCP, UDP або TCP+UDP
+- додавання й видалення port mappings для admin users
+- port conflict pre-check перед додаванням mapping
+- friendly labels для портів, наприклад `Game` або `RCON`
+- enable/disable для окремих port mappings
+
+## UFW block controls
+
+Коли UFW увімкнено в Panel Settings, кожен port може мати shield action для block/unblock traffic на OS-рівні через `sudo -n ufw`.
+
+UI враховує permissions. Якщо passwordless sudo недоступний, панель показує sudoers command, який треба додати на хості.
+
+## Bandwidth limits
+
+Yunexal може застосовувати Linux `tc` TBF qdisc limits у Mbit/s. Limits зберігаються й повторно застосовуються після restart, якщо bandwidth controls увімкнені в Panel Settings.

@@ -1,22 +1,24 @@
-# Pyrodactyl Documentation
+# Yunexal Documentation
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+Documentation site for [Yunexal Panel](https://github.com/nestorchurin/yunexal-panel), a self-hosted Docker server management platform built with Rust, Axum, SQLite, and Bollard.
 
-Run development server:
+The docs currently track the `v0.5.0` product shape: binary installation, nginx reverse proxy setup, Docker permissions, RBAC, file management, networking, panel settings, API access, storage quotas, security, and project internals.
+
+## Development
 
 ```bash
+pnpm install
 pnpm dev
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+Open the local URL printed by Next.js.
 
-## Learn More
+## Content
 
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
+Main documentation lives in:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.vercel.app) - learn about Fumadocs
+```text
+content/docs/yunexal/
+```
+
+English pages use `.mdx`; Ukrainian pages use `.uk.mdx`.

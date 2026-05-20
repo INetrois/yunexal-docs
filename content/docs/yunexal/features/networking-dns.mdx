@@ -1,0 +1,27 @@
+---
+title: Networking
+description: Port mapping, bandwidth control, and firewall actions.
+---
+
+# Networking
+
+Networking is a first-class server tab in Yunexal Panel.
+
+## Port mappings
+
+- View all host-to-container port bindings
+- Show protocol as TCP, UDP, or TCP+UDP
+- Add and remove port mappings as an admin
+- Run a port conflict pre-check before adding a mapping
+- Tag ports with friendly labels such as `Game` or `RCON`
+- Enable or disable individual port mappings
+
+## UFW block controls
+
+When UFW is enabled in Panel Settings, each port can expose a shield action that blocks or unblocks traffic at the operating-system level through `sudo -n ufw`.
+
+The UI is permission-aware. If passwordless sudo access is denied, the panel shows the sudoers command needed to fix host permissions.
+
+## Bandwidth limits
+
+Yunexal can apply Linux `tc` TBF qdisc limits in Mbit/s. Limits are persisted and reapplied after restart when bandwidth controls are enabled in Panel Settings.

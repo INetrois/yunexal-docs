@@ -1,0 +1,27 @@
+---
+title: Початок роботи
+description: Найкоротший шлях від release tarball до працюючого розгортання Yunexal Panel.
+---
+
+# Початок роботи
+
+Рекомендований шлях — використати релізний tarball і дати `yunexal-setup` підготувати Docker, `.env`, root-акаунт, optional systemd integration та nginx scaffolding.
+
+<Cards>
+  <Card title="Встановлення з бінарника" href="/uk/docs/yunexal/getting-started/binary-installation">
+    Завантажте останній реліз, розпакуйте його, запустіть `yunexal-setup` і підніміть панель.
+  </Card>
+  <Card title="Збірка з source" href="/uk/docs/yunexal/getting-started/source-build">
+    Зберіть `yunexal-panel` і `yunexal-setup` через Cargo, якщо хочете працювати безпосередньо з кодом.
+  </Card>
+  <Card title="Reverse Proxy" href="/uk/docs/yunexal/getting-started/reverse-proxy">
+    Налаштуйте nginx так, щоб HTTPS і WebSocket-консоль працювали без збоїв.
+  </Card>
+</Cards>
+
+## Що підготувати заздалегідь
+
+- Linux-хост із доступним Docker Engine
+- Вільний порт для самої панелі, за замовчуванням `3000`
+- Розуміння, що база SQLite і `volumes/` лежать поруч із бінарником
+- Можливість запускати setup wizard через `sudo`, бо він може встановлювати Docker, створювати service files і змінювати nginx

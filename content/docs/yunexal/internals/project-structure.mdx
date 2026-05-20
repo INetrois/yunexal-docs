@@ -1,0 +1,22 @@
+---
+title: Project structure
+description: Where to find auth, Docker, files, networking, storage, setup, templates, and assets.
+---
+
+# Project structure
+
+Yunexal is organized around product actions: auth, Docker lifecycle, file operations, networking, storage, setup, and templates.
+
+| Area | Files |
+|---|---|
+| Auth/session/RBAC | `src/auth.rs`, `src/db/roles.rs`, `src/db/sessions.rs`, `src/handlers/auth.rs` |
+| Docker lifecycle | `src/docker/containers.rs`, `src/docker/edit.rs`, `src/handlers/servers.rs` |
+| File manager | `src/docker/files.rs`, `src/handlers/files.rs`, `templates/files*` |
+| Networking/UFW/bandwidth | `src/docker/network.rs`, `src/db/ports.rs`, `src/handlers/network.rs` |
+| Storage/quota | `src/docker/quota.rs`, `src/handlers/admin.rs` |
+| Admin UI | `src/handlers/admin.rs`, `templates/admin*` |
+| Setup wizard | `src/bin/setup.rs`, `src/host.rs` |
+| Frontend JS/CSS | `static/` |
+| HTML templates | `templates/` |
+
+Templates and static assets are compiled into the binary.

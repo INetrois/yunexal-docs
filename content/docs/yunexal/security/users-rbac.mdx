@@ -1,0 +1,29 @@
+---
+title: Users, roles, and access
+description: RBAC, UID/Nickname identity, container-scoped access, and practical role design.
+---
+
+# Users, roles, and access
+
+Yunexal `v0.5.0` includes role-based access control with tri-state permissions: `read / none / write`.
+
+## Role Studio
+
+Admins can create custom roles, edit permission matrices, assign role colors, and assign roles to users. The `root` role is immutable.
+
+## Container-scoped access
+
+Users can be added to a specific container without global admin rights.
+
+| Capability | Controls |
+|---|---|
+| `console` | server console |
+| `files` | file manager read/write |
+| `networking` | ports, UFW, bandwidth |
+| `settings` | ENV, factory reset, danger zone |
+| `audit` | server audit log |
+| `power` | start / stop / restart / kill |
+
+## Practical roles
+
+Use `root` for the owner, `admin` for technical operators, `support` for limited troubleshooting, `server-owner` for customers, and `viewer` for read-only access.

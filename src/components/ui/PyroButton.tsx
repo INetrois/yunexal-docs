@@ -25,16 +25,16 @@ const button = cva(
 		"ring-0",
 		"focus-visible:ring-2",
 		"focus-visible:ring-offset-2",
-		"focus-visible:ring-[deepskyblue]",
+		"focus-visible:ring-brand",
 		"focus-visible:ring-offset-[black]",
 	],
 	{
 		variants: {
 			variant: {
 				primary: ["bg-brand", "text-white", "hover:bg-brand/80"],
-				secondary: ["bg-black dark:bg-white", "text-white dark:text-black", "hover:bg-black/80 dark:hover:bg-white/80"],
-				tertiary: ["bg-[#ffffff33]", "text-white", "hover:bg-[#ffffff55]"],
-				quaternary: ["bg-[#1a1a1a]", "text-white", "hover:bg-[#252525]", "border-[#333]", "hover:border-[#444]"],
+				secondary: ["bg-brand/15", "text-white", "hover:bg-brand/25", "border-brand/30", "hover:border-brand/40"],
+				tertiary: ["bg-brand/20", "text-white", "hover:bg-brand/30", "border-brand/30", "hover:border-brand/40"],
+				quaternary: ["bg-[#120d1f]", "text-white", "hover:bg-[#1a1330]", "border-[#332356]", "hover:border-[#4b30a3]"],
 			},
 			size: {
 				ghost: [],

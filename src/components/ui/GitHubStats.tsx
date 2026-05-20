@@ -3,24 +3,39 @@
 import { useEffect, useState } from 'react';
 import { StarIcon } from '@heroicons/react/24/solid';
 
+const FALLBACK_STARS = 5;
+
 export function GitHubStats() {
-  const [stars, setStars] = useState<number | null>(null);
+  const [stars, setStars] = useState(FALLBACK_STARS);
 
   useEffect(() => {
-    Promise.all([
-      fetch('https://api.eva.pink/api/stars/pyrodactyl-oss/pyrodactyl').then(r => r.json()),
-      fetch('https://api.eva.pink/api/stars/pyrohost/pyrodactyl').then(r => r.json()),
-    ])
-      .then(([repo1, repo2]) => {
-        setStars((repo1.stars || 0) + (repo2.stars || 0));
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 1800);
+
+    fetch('/api/github/stars', { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { stars?: number } | null) => {
+        if (typeof data?.stars === 'number') {
+          setStars(data.stars);
+        }
       })
-      .catch(console.error);
+      .catch(() => {
+        setStars(FALLBACK_STARS);
+      })
+      .finally(() => {
+        window.clearTimeout(timeout);
+      });
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeout);
+    };
   }, []);
 
   return (
-    <div className="inline-flex items-center gap-2 text-white/50">
-      <StarIcon className="w-4 h-4 text-yellow-400" />
-      <span className="font-semibold text-white">{stars !== null ? stars.toLocaleString() : '...'}</span>
+    <div className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 text-sm text-white/60">
+      <StarIcon className="h-4 w-4 shrink-0 text-[#f6c76f]" />
+      <span className="min-w-[1ch] font-semibold text-white">{stars.toLocaleString()}</span>
       <span>stars on GitHub</span>
     </div>
   );

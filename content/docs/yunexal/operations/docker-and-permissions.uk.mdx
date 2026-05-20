@@ -1,0 +1,52 @@
+---
+title: Docker та дозволи
+description: Docker-доступ, імпорт контейнерів, робота із сокетом і UFW permission model.
+---
+
+# Docker та дозволи
+
+Панель побудована навколо Docker. Якщо доступ до Docker відсутній або частково зламаний, значна частина функціоналу просто не працюватиме.
+
+## Базові вимоги до Docker
+
+- Docker Engine має бути встановлений і запущений
+- процес панелі має мати доступ до Docker socket
+- setup wizard перевіряє Docker через pull `alpine:latest`
+
+## Доступ користувача до Docker
+
+Upstream README рекомендує додати свого користувача в групу `docker`:
+
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+## Імпорт уже існуючих контейнерів
+
+`yunexal-setup` уміє імпортувати наявні Docker-контейнери в базу панелі. Під час цього кроку він:
+
+- показує всі поточні контейнери Docker
+- дозволяє вибрати окремі позиції або `all`
+- реєструє їх як managed servers у базі панелі
+
+Це корисно, якщо ви накочуєте Yunexal Panel на хост, де сервіси вже працюють у контейнерах.
+
+## Інтеграція з UFW
+
+Networking-сторінки можуть показувати per-port UFW shield action, але лише якщо UFW support увімкнено в settings і панель може виконувати `sudo -n ufw`.
+
+У README наведено такий sudoers-патерн:
+
+```bash
+echo "www-data ALL=(ALL) NOPASSWD: /usr/sbin/ufw" | sudo tee /etc/sudoers.d/yunexal-ufw
+```
+
+Admin handler також повертає fix command, якщо `sudo -n ufw` відхилено, тож UI може пояснити, що саме треба доправити на хості.
+
+## Що перевіряти, коли Docker-функції не працюють
+
+- чи має service user доступ до `/var/run/docker.sock`
+- чи відпрацьовує `docker ps` у тому самому user context
+- чи активний Docker daemon
+- чи має хост достатньо прав для створення та інспекції контейнерів і томів

@@ -1,0 +1,26 @@
+---
+title: Troubleshooting
+description: Common service, Docker, WebSocket, UFW, quota, file, and session issues.
+---
+
+# Troubleshooting
+
+Start with logs and facts:
+
+```bash
+journalctl -u yunexal-panel -f
+systemctl status yunexal-panel
+ss -tulpn | grep 3000
+docker ps -a
+sudo nginx -t
+curl -I http://127.0.0.1:3000
+```
+
+| Problem | Check | Fix |
+|---|---|---|
+| Panel does not start | `journalctl` | Check `.env`, `COOKIE_SECRET`, DB and volume permissions |
+| Docker permission denied | Docker socket/group | Add service user to Docker group |
+| WebSocket console fails | nginx upgrade headers | Add `Upgrade`, `Connection`, and 3600s timeouts |
+| UFW button fails | `sudo -n ufw status` | Add a narrow sudoers rule |
+| Disk limit disabled | `findmnt` | Use ext4 with `prjquota` |
+| Login loops | `COOKIE_SECRET` changed | Log in again; old sessions are invalidated |

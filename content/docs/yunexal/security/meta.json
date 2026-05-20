@@ -1,0 +1,9 @@
+{
+  "title": "Security",
+  "icon": "Shield",
+  "pages": [
+    "index",
+    "users-rbac",
+    "auth-rate-limits"
+  ]
+}

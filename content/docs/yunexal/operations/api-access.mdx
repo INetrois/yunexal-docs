@@ -1,0 +1,21 @@
+---
+title: API access
+description: Confirmed API endpoints, service API key, and third-party integration model.
+---
+
+# API access
+
+Yunexal exposes a service API key flow through `POST /api/auth/service-login`. The repository does not currently ship a full OpenAPI reference, so only confirmed endpoints are documented here.
+
+The key can be stored in Panel Settings or provided as `YUNEXAL_API_KEY` / `PANEL_API_KEY`.
+
+| Endpoint | Method | Purpose |
+|---|---:|---|
+| `/api/auth/service-login` | `POST` | Validate API key and issue a session cookie |
+| `/api/servers/{id}/audit` | `GET` | Read per-server audit log |
+| `/api/servers/{id}/audit/download` | `GET` | Export audit log |
+| `/api/admin/storage/migrate` | `POST` | Container storage migration |
+| `/api/admin/storage/mounts?include_all=1` | `GET` | Storage mount/debug listing |
+| `/api/image/build-dockerfile` | `POST` | Multipart Dockerfile build |
+
+Keep API keys out of query strings and logs. Use HTTPS in production.

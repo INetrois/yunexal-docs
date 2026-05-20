@@ -1,0 +1,26 @@
+---
+title: Server lifecycle
+description: How Yunexal Panel creates, updates, restarts, resets, and controls Docker containers.
+---
+
+# Server lifecycle
+
+Yunexal Panel manages the full server lifecycle: creation, power actions, ENV and port changes, user access, audit, file operations, and destructive actions.
+
+## Creation flow
+
+1. Admin opens **New Server**.
+2. Selects a local image, Docker Hub image, or Dockerfile build.
+3. Configures owner, ENV, ports, disk limit, and bandwidth limit.
+4. GUI and YAML preview stay in sync through Monaco.
+5. Backend checks duplicate names, port conflicts, image refs, and quota preflight.
+6. Docker creates the container and SQLite stores panel metadata.
+7. Dashboard starts polling status and stats.
+
+## Power actions
+
+Start, stop, restart, and kill actions must respect `power:write` for non-admin members.
+
+## Recreate and reset
+
+Changing ENV or some container parameters can require recreate. Factory Reset wipes the volume and restarts the container, so production users should take a manual backup first.

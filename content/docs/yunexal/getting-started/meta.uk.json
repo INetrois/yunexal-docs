@@ -1,0 +1,10 @@
+{
+  "title": "Початок роботи",
+  "icon": "Rocket",
+  "pages": [
+    "index",
+    "binary-installation",
+    "source-build",
+    "reverse-proxy"
+  ]
+}

@@ -1,0 +1,38 @@
+---
+title: Storage and quota
+description: Volume paths, ext4 project quotas, migration, and unsafe override mode.
+---
+
+# Storage and quota
+
+In `v0.5.0`, the documented quota-capable backend is **ext4 with prjquota**.
+
+## Required mount
+
+```text
+/dev/sdb1 /var/lib/yunexal-volumes ext4 defaults,prjquota 0 2
+```
+
+Check it with:
+
+```bash
+findmnt -no FSTYPE,OPTIONS /var/lib/yunexal-volumes
+```
+
+## Flow
+
+```text
+Storage path
+-> validate_storage_base_path(...)
+-> check ext4 + prjquota
+-> apply_ext4_quota / remove_ext4_quota
+-> container creation / recreate / migration
+```
+
+## Migration
+
+Storage migration follows: stop container, prepare target, rsync data, recreate container, update DB, reapply bandwidth/quota, restart.
+
+## Practice
+
+Use a dedicated ext4 partition for volumes, avoid putting customer data on the root filesystem, and keep external backups until built-in backups are available.

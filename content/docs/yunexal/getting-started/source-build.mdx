@@ -1,0 +1,52 @@
+---
+title: Build From Source
+description: Build and run Yunexal Panel directly from the repository with Cargo.
+---
+
+# Build From Source
+
+Building from source is a good fit when you want to inspect, patch, or track the repository itself.
+
+## Requirements
+
+- Rust `1.78+`
+- Docker Engine available on the host
+- A Linux environment where the resulting binaries can access `/var/run/docker.sock`
+
+## Build steps
+
+```bash
+git clone https://github.com/nestorchurin/yunexal-panel.git
+cd yunexal-panel
+cargo build --release
+```
+
+This produces:
+
+- `target/release/yunexal-panel`
+- `target/release/yunexal-setup`
+
+## Run setup
+
+```bash
+sudo ./target/release/yunexal-setup
+```
+
+## Start the panel
+
+```bash
+./target/release/yunexal-panel
+```
+
+## Source layout to know while developing
+
+- `src/main.rs` wires the Axum app, middleware, and runtime startup
+- `src/state.rs` carries database, Docker client, cookie key, and login-rate-limit state
+- `src/handlers/` contains the route handlers for dashboard, files, networking, admin, auth, and WebSocket console
+- `templates/` and `static/` are embedded into the binary instead of being served from a separate runtime directory
+
+## When source builds are preferable
+
+- You need to audit or modify the Rust handlers directly
+- You want to run a custom branch rather than the latest release asset
+- You are contributing features or fixes upstream

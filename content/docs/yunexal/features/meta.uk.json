@@ -1,0 +1,11 @@
+{
+  "title": "Можливості",
+  "icon": "LayoutDashboard",
+  "pages": [
+    "index",
+    "dashboard-console",
+    "file-manager",
+    "networking-dns",
+    "admin-and-updates"
+  ]
+}

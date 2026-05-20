@@ -1,0 +1,54 @@
+---
+title: Yunexal Panel
+description: v0.5.0 self-hosted платформа керування серверами на Docker.
+---
+
+# Yunexal Panel
+
+**v0.5.0** — self-hosted платформа керування серверами, побудована на Docker.
+
+Yunexal Panel використовує **Rust + Axum**, **SQLite** і **Bollard**. Templates і static assets компілюються в один binary, тому для runtime не потрібні окремі frontend-файли.
+
+<Cards>
+  <Card title="Початок роботи" href="/uk/docs/yunexal/getting-started">
+    Встановлення release binary, запуск `yunexal-setup` і production reverse proxy через nginx.
+  </Card>
+  <Card title="Можливості" href="/uk/docs/yunexal/features">
+    Dashboard, console, файловий менеджер, networking, server members, audit log, container creation і admin tools.
+  </Card>
+  <Card title="Експлуатація" href="/uk/docs/yunexal/operations">
+    `.env`, Docker socket, UFW permissions, storage quotas, API keys і production playbooks.
+  </Card>
+  <Card title="Безпека" href="/uk/docs/yunexal/security">
+    Encrypted cookies, Argon2id, RBAC, rate limits, security headers, safe file paths і trusted proxy handling.
+  </Card>
+  <Card title="Внутрішня будова" href="/uk/docs/yunexal/internals">
+    Source layout, Axum handlers, SQLite modules, Docker integration, embedded assets і roadmap.
+  </Card>
+</Cards>
+
+## Статус репозиторію
+
+Робота над installer-image customization зараз призупинена. Repository scripts лишаються local-only файлами та ігноруються git, тому не входять у GitHub-tracked source set.
+
+Активний і підтримуваний сценарій — direct host installation через release binaries і `yunexal-setup`.
+
+## Що вже є
+
+- Dashboard із live container cards, CPU/RAM/Network/Disk metrics, uptime, status badges і `My only` filter
+- WebSocket console через `xterm.js`, ANSI colors, command input, live charts і storage card
+- SPA-style server tabs: Console, Files, Networking, Settings, Audit, Users
+- File manager із breadcrumbs, 150+ icons, Ace editor, uploads, archive/extract і safe path handling
+- Server settings для ENV, factory reset і admin-only delete
+- Server members із UID lookup і policies `none / read / write`
+- Immutable audit logs із filters, Device column, pagination і download
+- Networking: port mappings, labels, enable/disable, UFW blocks і Linux `tc` bandwidth limits
+- Container creation із local-first images, Dockerfile build, Compose-style YAML, ENV fetch, owner assignment і quota preflight
+- Admin Panel: Overview, Containers, Images, Users, Roles, Audit Log, Panel Settings
+- Session devices, password-change invalidation, service API login, encrypted cookies, Argon2id, rate limits і security headers
+
+## Roadmap snapshot
+
+Уже реалізовані Overview, All Containers, Images, Users з RBAC, Audit Log, Panel Settings і API Keys.
+
+Заплановані dispatchers, firewall-wide allow/block rules, backups, tickets, insights, notifications, themes, Windows host support, mobile app, ARM support, marketplace, community plugins, localization і accessibility.

@@ -1,0 +1,30 @@
+---
+title: Dashboard And Console
+description: Live server overview, sessions modal, and terminal workflows.
+---
+
+# Dashboard And Console
+
+The dashboard is the main operational surface for managed containers.
+
+## Dashboard
+
+- Live grid of all managed containers with CPU percentage, RAM, Network I/O, Disk I/O, and uptime
+- In-place card updates, so state refreshes do not recreate DOM cards or flicker animations
+- `My only` toggle for admins who want to see only their own servers
+- Auto-polling every 5 seconds
+- Status badges for Running, Stopped, and Error
+- Settings modal for changing your password and managing active devices without leaving the dashboard
+
+## Server console
+
+- WebSocket terminal attached to the Docker container TTY through `xterm.js`
+- ANSI color support and conversion for servers that emit simple HTML tags such as `<b>` and styled spans
+- Dedicated command input below the terminal; Enter sends to stdin
+- Live metric charts with 1 second polling and 200-point history
+- CPU percentage, RAM percentage, Network KB/s, and Disk I/O KB/s chart data
+- Storage card showing volume size when the server page opens
+
+## Server sidebar
+
+Server tabs load as SPA-style partial navigations. Console, Files, Networking, Settings, Audit, and Users replace only `.yu-main`, keep the sidebar intact, and reinitialize their own polling or WebSocket lifecycle through `yu:page-shown` events. Browser back and forward navigation works through `history.pushState`.

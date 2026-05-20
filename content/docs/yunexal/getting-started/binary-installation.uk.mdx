@@ -1,0 +1,59 @@
+---
+title: Встановлення з бінарника
+description: Встановлення Yunexal Panel з upstream release tarball через інтерактивний setup wizard.
+---
+
+# Встановлення з бінарника
+
+Upstream README описує установку з релізного архіву як основний сценарій.
+
+## 1. Завантаження та розпакування
+
+```bash
+wget https://github.com/nestorchurin/yunexal-panel/releases/latest/download/yunexal-panel-linux-x86_64.tar.gz
+tar -xzf yunexal-panel-linux-x86_64.tar.gz
+cd yunex-release
+```
+
+## 2. Запуск setup wizard
+
+```bash
+sudo ./yunexal-setup
+```
+
+Wizard із [`src/bin/setup.rs`](https://github.com/nestorchurin/yunexal-panel/blob/main/src/bin/setup.rs) проходить через такі етапи:
+
+- optional reset для `yunexal.db`, `yunexal.db-shm`, `yunexal.db-wal` і `.env`
+- перевірка Docker, optional install/upgrade, запуск daemon і тест на доступність `alpine:latest`
+- генерація `.env` з `PANEL_PORT`, `COOKIE_SECRET` і `DATABASE_URL=sqlite:yunexal.db`
+- створення або оновлення root-користувача
+- optional import уже існуючих Docker-контейнерів у базу панелі
+- optional створення `systemd` service для `yunexal-panel`
+- optional генерація nginx reverse-proxy config
+
+## 3. Запуск панелі
+
+```bash
+./yunexal-panel
+```
+
+Якщо на етапі setup було ввімкнено systemd-сервіс, користуйтеся:
+
+```bash
+sudo systemctl status yunexal-panel
+sudo journalctl -u yunexal-panel -f
+```
+
+## Які файли створюються під час першого старту
+
+- `yunexal.db`
+- `yunexal.db-shm`
+- `yunexal.db-wal`
+- `.env`
+- `volumes/`
+
+## Важливі нотатки
+
+- Setup wizard треба запускати від root.
+- Зміна `COOKIE_SECRET` інвалідовує всі активні сесії.
+- Якщо панель буде працювати за публічним доменом, переходьте далі до reverse-proxy гайду, інакше console WebSocket може не працювати.

@@ -1,0 +1,57 @@
+---
+title: Yunexal Panel
+description: v0.5.0 self-hosted server management platform built on Docker.
+---
+
+# Yunexal Panel
+
+**v0.5.0** is a self-hosted server management platform built on Docker.
+
+Yunexal Panel is built with **Rust + Axum**, **SQLite**, and **Bollard**. Templates and static assets are compiled into a single binary, so production deployments do not need external runtime frontend files.
+
+<Cards>
+  <Card title="Getting Started" href="/docs/yunexal/getting-started">
+    Install the release binary, run `yunexal-setup`, and place nginx in front of the panel when you need HTTPS.
+  </Card>
+  <Card title="Features" href="/docs/yunexal/features">
+    Dashboard, console, file manager, networking, server members, audit log, container creation, admin tools, and PWA UI.
+  </Card>
+  <Card title="Operations" href="/docs/yunexal/operations">
+    Runtime configuration, Docker socket access, UFW permissions, storage quotas, API keys, and production playbooks.
+  </Card>
+  <Card title="Security" href="/docs/yunexal/security">
+    Encrypted cookies, Argon2id, RBAC, rate limits, security headers, safe file paths, and trusted proxy handling.
+  </Card>
+  <Card title="Internals" href="/docs/yunexal/internals">
+    Source layout, Axum handlers, SQLite modules, Docker integration, embedded assets, and the v0.5.0 roadmap.
+  </Card>
+</Cards>
+
+## Repository status
+
+Installer-image customization work is currently paused. Repository scripts are kept as local-only files and are ignored by git, so they are not part of the GitHub-tracked source set.
+
+The active and supported flow is direct host installation using release binaries and `yunexal-setup`.
+
+## Current feature set
+
+- Dashboard with live container cards, CPU, RAM, network I/O, disk I/O, uptime, status badges, and a `My only` admin filter
+- WebSocket console through `xterm.js`, ANSI color support, command input, live metric charts, and volume size display
+- SPA-style server sidebar tabs for Console, Files, Networking, Settings, Audit, and Users
+- File manager with breadcrumbs, 150+ format icons, Ace editor, drag-and-drop uploads, archive/extract tools, and safe path handling
+- Server settings for environment variables, factory reset, and admin-only delete actions
+- Server members with UID lookup and per-capability `none / read / write` access policies
+- Per-server and global immutable audit logs with filters, device parsing, pagination, and log download
+- Networking controls for port mappings, labels, enable/disable state, UFW blocks, and Linux `tc` bandwidth limits
+- Admin-only container creation from local or Docker Hub images, Dockerfile builds, Compose-style YAML, ENV fetch, owner assignment, and quota preflight
+- Admin panel tabs for Overview, Containers, Images, Users, Roles, Audit Log, and Panel Settings
+- Root-only panel settings for UFW, bandwidth visibility, sidebar visibility, ZRAM guidance, storage, and service API key
+- Session device management, password-change session invalidation, service API login, encrypted cookies, Argon2id, rate limits, and security headers
+
+## Roadmap snapshot
+
+Implemented areas include Overview, All Containers, Images, Users with RBAC, Audit Log, Panel Settings, and API Keys.
+
+Planned areas include dispatchers, firewall-wide allow/block rules, scheduled backups, tickets, insights, notifications, themes, Windows host support, mobile app, ARM support, marketplace templates, community plugins, localization, and accessibility.
+
+The roadmap is flexible and evolves through [Issues](https://github.com/nestorchurin/yunexal-panel/issues) and [Discussions](https://github.com/nestorchurin/yunexal-panel/discussions).

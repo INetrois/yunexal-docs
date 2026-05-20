@@ -1,0 +1,31 @@
+---
+title: Security
+description: Core authentication, authorization, and request safety controls.
+---
+
+# Security
+
+Yunexal Panel combines session-based authentication, RBAC, strict cookies, route guards, file safety checks, and conservative proxy trust rules.
+
+## Current protections
+
+- Session-based login with encrypted private cookies using AES-GCM through `axum-extra`
+- Argon2id password hashing with random salts
+- Route middleware that redirects unauthenticated users to `/login` and returns 403 for non-admin users on admin routes
+- Login rate limiting: 5 failed logins per IP cause a 60 second lockout
+- Security headers: CSP, `X-Frame-Options`, HSTS, `Referrer-Policy`, and `Permissions-Policy`
+- `SameSite=Strict` session cookies to reduce CSRF risk
+- XSS protection through Askama auto-escaping plus `escHtml()` and `escAttr()` in JavaScript
+- Path traversal and symlink-escape protection on file endpoints
+- `X-Forwarded-For` and `X-Real-IP` are trusted only from local or private proxy addresses
+
+## Authorization model
+
+- Global roles are managed through the RBAC Role Studio
+- `root` is immutable
+- Non-root admins cannot delete other admins
+- Server members can receive scoped `none / read / write` policies for console, files, networking, settings, audit, and power
+
+## Session model
+
+Password changes immediately invalidate active sessions across devices. Users can manage active devices from the Dashboard Settings modal, and session cookies carry a password-hash stamp so stale cookies require re-login.

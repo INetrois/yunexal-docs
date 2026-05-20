@@ -7,9 +7,9 @@ const pillVariants = cva(
 		variants: {
 			variant: {
 				default: "border-brand/30 bg-brand/10 text-brand",
-				success: "border-green-500/30 bg-green-500/10 text-green-500",
-				warning: "border-yellow-500/30 bg-yellow-500/10 text-yellow-500",
-				error: "border-red-500/30 bg-red-500/10 text-red-500"
+				success: "border-violet-400/30 bg-violet-400/10 text-violet-300",
+				warning: "border-fuchsia-400/30 bg-fuchsia-400/10 text-fuchsia-300",
+				error: "border-purple-400/30 bg-purple-400/10 text-purple-300"
 			}
 		},
 		defaultVariants: {

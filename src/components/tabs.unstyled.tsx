@@ -2,6 +2,7 @@
 
 import {
   type ComponentProps,
+  type Ref,
   createContext,
   useContext,
   useLayoutEffect,
@@ -112,7 +113,7 @@ export function Tabs({
 
   return (
     <Primitive.Tabs
-      ref={mergeRefs(ref, tabsRef)}
+      ref={mergeRefs(ref as Ref<HTMLDivElement>, tabsRef) as never}
       value={value}
       onValueChange={(v: string) => {
         if (updateAnchor) {

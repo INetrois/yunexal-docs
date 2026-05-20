@@ -1,0 +1,15 @@
+{
+  "title": "Operations",
+  "icon": "Settings2",
+  "pages": [
+    "index",
+    "configuration",
+    "docker-and-permissions",
+    "panel-settings",
+    "server-lifecycle",
+    "storage-quota",
+    "api-access",
+    "playbook",
+    "troubleshooting"
+  ]
+}

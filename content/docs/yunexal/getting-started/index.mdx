@@ -1,0 +1,27 @@
+---
+title: Getting Started
+description: The shortest path from release tarball to a working Yunexal Panel deployment.
+---
+
+# Getting Started
+
+The recommended path is to use the release tarball and let `yunexal-setup` prepare Docker, `.env`, the root account, optional systemd integration, and nginx scaffolding.
+
+<Cards>
+  <Card title="Binary Installation" href="/docs/yunexal/getting-started/binary-installation">
+    Download the latest release, extract it, run `yunexal-setup`, and launch the panel.
+  </Card>
+  <Card title="Build From Source" href="/docs/yunexal/getting-started/source-build">
+    Build `yunexal-panel` and `yunexal-setup` locally with Cargo when you want to track source directly.
+  </Card>
+  <Card title="Reverse Proxy" href="/docs/yunexal/getting-started/reverse-proxy">
+    Configure nginx correctly so HTTPS and the WebSocket console both work in production.
+  </Card>
+</Cards>
+
+## Before you start
+
+- Use a Linux host with Docker Engine available
+- Keep a free port for the panel itself, default `3000`
+- Expect the panel to store its SQLite database and `volumes/` directory beside the binary
+- Run the setup wizard with `sudo`, because it can install Docker, create service files, and manage nginx

@@ -1,0 +1,33 @@
+---
+title: Panel Settings
+description: Root-only settings для storage, security, operations, interface і API access.
+---
+
+# Panel Settings
+
+Panel Settings доступні лише root-користувачу та згруповані за категоріями.
+
+## Storage
+
+- default container storage path
+- cross-disk migration
+- disk filesystem conversion до ext4
+- unsafe override mode для advanced setups
+- ZRAM hint як collapsible block, якщо ZRAM неактивний
+
+## Security і operations
+
+- UFW toggle для global per-port block support
+- Bandwidth toggle для показу або приховування bandwidth controls на Networking pages
+- API key management для service integrations через `YUNEXAL_API_KEY`
+
+## Interface
+
+- Sidebar Visibility toggle для upcoming `SOON` badges в admin sidebar
+
+## Deployment guidance
+
+- тримайте UFW disabled у panel, доки `sudo -n ufw` не працює для service user
+- вмикайте bandwidth controls лише на Linux hosts із доступним `tc`
+- використовуйте ext4 з `prjquota`, якщо потрібні per-container disk limits
+- ставтеся до service API key як до password і rotate після підозри на витік

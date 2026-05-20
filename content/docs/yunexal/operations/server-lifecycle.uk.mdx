@@ -1,0 +1,67 @@
+---
+title: Server lifecycle
+description: Як Yunexal Panel створює, змінює, перезапускає, скидає й контролює Docker containers.
+---
+
+# Server lifecycle
+
+Yunexal Panel керує не просто процесом Docker, а повним життєвим циклом сервера: створення, запуск, зупинка, зміна ENV/портів, доступи користувачів, аудит, файлові операції та destructive actions.
+
+## Створення сервера
+
+Типовий flow:
+
+1. Admin відкриває **New Server**.
+2. Обирає image: локальний Docker image, Docker Hub image або build from Dockerfile.
+3. Налаштовує owner, ENV, ports, disk limit і bandwidth limit.
+4. GUI і YAML preview синхронізуються через Monaco editor.
+5. Backend перевіряє duplicate name, port conflicts, image reference validity і quota preflight.
+6. Контейнер створюється в Docker і реєструється в SQLite.
+7. Dashboard починає polling status/stats.
+
+## Image selection
+
+Панель використовує local-first підхід:
+
+- спочатку шукає image серед локально доступних Docker images;
+- якщо image немає локально, пробує pull;
+- in-input image picker показує локальні suggestions;
+- Dockerfile можна завантажити через UI і зібрати як custom local image;
+- ENV можна підтягнути з image metadata через **Fetch ENV**.
+
+## Power actions
+
+Power actions включають:
+
+- start;
+- stop;
+- restart;
+- kill.
+
+Для non-admin members ці дії мають поважати permission `power:write`. Для admin/global permissions доступ ширший.
+
+## Edit / recreate
+
+Частина змін не може бути застосована до живого контейнера без recreate. Наприклад, зміна ENV або окремих container parameters може вимагати:
+
+1. зупинити container;
+2. зберегти volume, ports і DB settings;
+3. створити container з новою конфігурацією;
+4. перев’язати metadata;
+5. перезапустити server.
+
+## Factory reset
+
+Factory Reset очищає volume і перезапускає container. Це destructive action, тому UI вимагає password confirmation.
+
+Перед reset у production бажано вручну зробити snapshot або backup volume, доки built-in scheduled backups ще перебувають у roadmap.
+
+## Audit
+
+Server lifecycle actions мають залишати слід в audit log. Для production-інсталяції це важливо не менше за саму дію, бо дозволяє відповісти:
+
+- хто змінив ENV;
+- хто запускав або зупиняв server;
+- хто виконував reset;
+- який browser/device робив дію;
+- які filters застосувати при export.

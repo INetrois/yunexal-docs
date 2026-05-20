@@ -1,0 +1,40 @@
+---
+title: File Manager
+description: The storage and file operations available per managed server.
+---
+
+# File Manager
+
+The file manager is one of the deeper feature areas in the current codebase. The handler in `src/handlers/files.rs` is large because it covers navigation, editing, uploads, archive handling, and several safety checks.
+
+## Core capabilities
+
+- folder and file browsing with breadcrumb navigation
+- full-screen editing for text and config files
+- file and directory creation
+- rename, copy, move, paste, and delete flows
+- drag-and-drop upload with per-file progress
+- archive creation as `.tar.gz`
+- extract support for `.tar.gz`, `.tar.bz2`, `.tar.xz`, `.zip`, `.jar`, `.rar`, `.7z`, `.gz`, `.bz2`, and `.xz`
+
+## File-type awareness
+
+The upstream handler maps well over a hundred file types and exact filenames into categorized icons. That includes:
+
+- code and script files
+- config formats like YAML, TOML, `.env`, and INI-style files
+- archives and JARs
+- images, audio, and video
+- certificates and key material
+- text, markdown, CSV, logs, and office documents
+
+## Safety controls
+
+- path traversal checks resolve paths against the server volume root before any operation runs
+- uploads stream to a temporary file first and only then move into the volume
+- archive extraction is executed inside a controlled containerized helper path when needed
+- bulk operations still validate every requested path against the volume boundary
+
+## Operational takeaway
+
+This is not just a lightweight file browser. It behaves more like a container volume workbench, which makes it a key part of everyday panel usage.

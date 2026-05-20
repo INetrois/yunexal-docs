@@ -1,0 +1,42 @@
+---
+title: Configuration
+description: Runtime environment variables для Yunexal Panel.
+---
+
+# Configuration
+
+Yunexal Panel читає configuration із `.env` поруч із binary або напряму з environment variables. `yunexal-setup` генерує цей файл інтерактивно.
+
+## Default `.env`
+
+```dotenv
+# Panel port (default: 3000)
+PANEL_PORT=3000
+
+# 128-character hex string, 64 random bytes.
+# Changing this invalidates all active sessions.
+COOKIE_SECRET=<128 hex chars>
+
+# Optional service API key for third-party integrations.
+YUNEXAL_API_KEY=<your-api-key>
+
+# Written by yunexal-setup.
+DATABASE_URL=sqlite:yunexal.db
+```
+
+`PANEL_API_KEY` також приймається як API-key environment variable.
+
+## Runtime files
+
+SQLite database `yunexal.db` і directory `volumes/` створюються автоматично під час першого запуску поруч із binary.
+
+## Initial credentials
+
+Initial credentials задаються через `yunexal-setup`. Additional users, roles і panel settings керуються з Admin Panel на `/admin`.
+
+## Operational notes
+
+- генеруйте `COOKIE_SECRET` через `openssl rand -hex 64`
+- rotate `COOKIE_SECRET` лише коли хочете розлогінити всіх
+- не передавайте API keys у query strings і не пишіть їх у proxy logs
+- у production завершуйте HTTPS на nginx або іншому reverse proxy й прокидайте traffic на `PANEL_PORT`
